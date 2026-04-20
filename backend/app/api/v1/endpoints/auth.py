@@ -6,7 +6,11 @@ from app.db.models.users import User
 from app.schemas.user import UserCreate, UserOut, Token
 from app.core.security import hash_password, verify_password, create_access_token
 
+
+
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
 
 @router.post("/register", response_model=UserOut)
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
@@ -28,6 +32,8 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     await db.refresh(new_user)
     return new_user
 
+
+
 @router.post("/login", response_model=Token)
 async def login(email: str, password: str, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == email))
@@ -36,3 +42,4 @@ async def login(email: str, password: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(401, "Invalid credentials")
     token = create_access_token({"sub": user.id})
     return {"access_token": token, "token_type": "bearer"}
+
