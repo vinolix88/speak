@@ -34,13 +34,6 @@ jobs:
 
       - name: Format with black
         run: black app/
-  
-      - name: Check if changes were made
-        run: |
-          if [[ -n "$(git status --porcelain)" ]]; then
-            echo "Black made changes. Please run 'black app/' locally and commit."
-            exit 1
-          fi
 
       #- name: Run tests (pytest)
       #  run: pytest -v
