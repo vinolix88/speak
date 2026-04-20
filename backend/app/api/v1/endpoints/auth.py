@@ -7,9 +7,7 @@ from app.schemas.user import UserCreate, UserOut, Token
 from app.core.security import hash_password, verify_password, create_access_token
 
 
-
 router = APIRouter(prefix="/auth", tags=["auth"])
-
 
 
 @router.post("/register", response_model=UserOut)
@@ -20,6 +18,7 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.username == user_data.username))
     if result.scalar_one_or_none():
         raise HTTPException(400, "Username taken")
+
 
     hashed = hash_password(user_data.password)
     new_user = User(
@@ -33,7 +32,6 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     return new_user
 
 
-
 @router.post("/login", response_model=Token)
 async def login(email: str, password: str, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == email))
@@ -42,4 +40,3 @@ async def login(email: str, password: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(401, "Invalid credentials")
     token = create_access_token({"sub": user.id})
     return {"access_token": token, "token_type": "bearer"}
-
