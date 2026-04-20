@@ -3,3 +3,9 @@ __pycache__/
 *.pyc 
 .env 
 speak.db 
+*.db
+node_modules/
+dist/
+.env.local
+.vscode/
+.idea/
