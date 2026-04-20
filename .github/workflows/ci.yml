@@ -30,7 +30,7 @@ jobs:
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Lint with flake8
-        run: flake8 app --max-line-length=120 --ignore=E203,W503,E302,W292,F401
+        run: flake8 app --max-line-length=120 --ignore=E203,W503,E302,W292,E305
 
       - name: Format with black
         run: black app/
