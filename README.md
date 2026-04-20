@@ -129,7 +129,11 @@ docker-compose exec backend alembic upgrade head
 ## Ссылки
 
 Репозиторий: https://github.com/vinolix88/speak.git
+
 Kaiten: https://aipodolskaya88.kaiten.ru/space/573977/boards
+
 Google Drive (отчетность): https://drive.google.com/drive/folders/1Pz0iUUDjw11oXb3WDSIryYetoW2Q_Fzd?usp=drive_link
+
 ER-диаграмма:  https://drive.google.com/drive/folders/1Pz0iUUDjw11oXb3WDSIryYetoW2Q_Fzd?usp=drive_link
+
 Use Case Diagram:  https://drive.google.com/drive/folders/1Pz0iUUDjw11oXb3WDSIryYetoW2Q_Fzd?usp=drive_link
