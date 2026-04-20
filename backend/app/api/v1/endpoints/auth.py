@@ -19,7 +19,6 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     if result.scalar_one_or_none():
         raise HTTPException(400, "Username taken")
 
-
     hashed = hash_password(user_data.password)
     new_user = User(
         username=user_data.username,
