@@ -63,4 +63,3 @@ async def refresh_token(refresh_data: RefreshTokenRequest, db: AsyncSession = De
         raise HTTPException(401, "User not found")
     new_access_token = create_access_token({"sub": user.id})
     return {"access_token": new_access_token, "token_type": "bearer"}
-

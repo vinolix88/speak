@@ -13,4 +13,3 @@ async def root():
     return {"message": "Speak API works"}
 
 app.include_router(users.router, prefix="/api/v1")   # добавили
-

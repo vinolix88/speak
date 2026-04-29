@@ -29,6 +29,7 @@ def create_access_token(data: dict) -> str:
     to_encode.update({"exp": expire, "type": "access"})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
+
 REFRESH_TOKEN_EXPIRE_DAYS = 30
 
 
@@ -37,6 +38,7 @@ def create_refresh_token(data: dict) -> str:
     expire = datetime.utcnow() + timedelta(days=REFRESH_TOKEN_EXPIRE_DAYS)
     to_encode.update({"exp": expire, "type": "refresh"})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
 
 security = HTTPBearer()
 
@@ -58,4 +60,3 @@ async def get_current_user(
     if user is None:
         raise HTTPException(status_code=401, detail="User not found")
     return user
-

@@ -29,4 +29,3 @@ class RefreshTokenRequest(BaseModel):
 class TokenRefreshResponse(BaseModel):
     access_token: str
     token_type: str = "bearer"
-
