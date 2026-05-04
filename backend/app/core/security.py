@@ -9,29 +9,21 @@ from app.db.session import get_db
 from app.db.models.users import User
 from app.core.config import settings
 
-
 pwd_context = CryptContext(schemes=["pbkdf2_sha256"], deprecated="auto")
-
 
 def hash_password(password: str) -> str:
     return pwd_context.hash(password)
 
-
 def verify_password(plain: str, hashed: str) -> bool:
     return pwd_context.verify(plain, hashed)
-
 
 def create_access_token(data: dict) -> str:
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     to_encode.update({"exp": expire, "type": "access"})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-
 REFRESH_TOKEN_EXPIRE_DAYS = 30
-
 
 def create_refresh_token(data: dict) -> str:
     to_encode = data.copy()
@@ -39,9 +31,7 @@ def create_refresh_token(data: dict) -> str:
     to_encode.update({"exp": expire, "type": "refresh"})
     return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
-
 security = HTTPBearer()
-
 
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
