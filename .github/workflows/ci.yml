@@ -1,0 +1,42 @@
+name: CI / Lint & Test
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [develop]
+
+jobs:
+  backend-checks:
+    name: Backend (Python)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 black pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+
+      - name: Lint with flake8
+        run: flake8 app --max-line-length=120 --ignore=E203,W503,F401
+
+      - name: Format with black
+        run: black app/
+
+      #- name: Run tests (pytest)
+      #  run: pytest -v
+        env:
+          DATABASE_URL: sqlite:///./test.db
+          SECRET_KEY: test-secret-key

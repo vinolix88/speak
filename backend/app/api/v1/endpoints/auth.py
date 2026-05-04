@@ -8,7 +8,9 @@ from app.schemas.user import UserCreate, UserOut, Token, RefreshTokenRequest, To
 from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token
 from app.core.config import settings
 
+
 router = APIRouter(prefix="/auth", tags=["auth"])
+
 
 @router.post("/register", response_model=UserOut)
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
@@ -30,15 +32,19 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
     await db.refresh(new_user)
     return new_user
 
+
 @router.post("/login", response_model=Token)
 async def login(email: str, password: str, db: AsyncSession = Depends(get_db)):
     result = await db.execute(select(User).where(User.email == email))
     user = result.scalar_one_or_none()
     if not user or not verify_password(password, user.password_hash):
         raise HTTPException(401, "Invalid credentials")
+    token = create_access_token({"sub": user.id})
+    return {"access_token": token, "token_type": "bearer"}
     access_token = create_access_token({"sub": user.id})
     refresh_token = create_refresh_token({"sub": user.id})
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+
 
 @router.post("/refresh", response_model=TokenRefreshResponse)
 async def refresh_token(refresh_data: RefreshTokenRequest, db: AsyncSession = Depends(get_db)):
