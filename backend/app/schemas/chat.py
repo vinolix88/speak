@@ -3,6 +3,7 @@ from typing import Optional, List
 from uuid import UUID
 from datetime import datetime
 
+
 class ChatOut(BaseModel):
     id: UUID
     type: str
@@ -11,6 +12,7 @@ class ChatOut(BaseModel):
     last_message: Optional[str] = None
     last_message_time: Optional[datetime] = None
     unread_count: int = 0
+
 
 class ChatCreate(BaseModel):
     type: str  # 'private' or 'group'

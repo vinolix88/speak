@@ -12,9 +12,13 @@ import uuid
 from datetime import datetime
 
 # Хранилище активных WebSocket соединений (в памяти, для MVP)
+
+
 class ConnectionManager:
     def __init__(self):
-        self.active_connections: dict[str, list[WebSocket]] = {}  # chat_id -> list of websockets
+        self.active_connections: dict[str, list[WebSocket]] = (
+            {}
+        )  # chat_id -> list of websockets
 
     async def connect(self, websocket: WebSocket, chat_id: str):
         await websocket.accept()
@@ -33,11 +37,15 @@ class ConnectionManager:
             for connection in self.active_connections[chat_id]:
                 await connection.send_json(message)
 
+
 manager = ConnectionManager()
+
 
 async def get_current_user_ws(token: str, db: AsyncSession):
     try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM]
+        )
         user_id: str = payload.get("sub")
         if user_id is None:
             raise HTTPException(401, "Invalid token")
@@ -49,7 +57,10 @@ async def get_current_user_ws(token: str, db: AsyncSession):
         raise HTTPException(401, "User not found")
     return user
 
-async def websocket_chat(websocket: WebSocket, chat_id: str, token: str, db: AsyncSession = Depends(get_db)):
+
+async def websocket_chat(
+    websocket: WebSocket, chat_id: str, token: str, db: AsyncSession = Depends(get_db)
+):
     # Аутентификация
     try:
         current_user = await get_current_user_ws(token, db)
@@ -62,7 +73,7 @@ async def websocket_chat(websocket: WebSocket, chat_id: str, token: str, db: Asy
         select(ChatParticipant).where(
             and_(
                 ChatParticipant.chat_id == chat_id,
-                ChatParticipant.user_id == current_user.id
+                ChatParticipant.user_id == current_user.id,
             )
         )
     )
@@ -89,7 +100,7 @@ async def websocket_chat(websocket: WebSocket, chat_id: str, token: str, db: Asy
                 is_edited=False,
                 is_deleted=False,
                 created_at=datetime.utcnow(),
-                updated_at=None
+                updated_at=None,
             )
             db.add(new_message)
             await db.commit()

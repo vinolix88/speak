@@ -4,11 +4,23 @@ from sqlalchemy import select
 from jose import jwt, JWTError
 from app.db.session import get_db
 from app.db.models.users import User
-from app.schemas.user import UserCreate, UserOut, Token, RefreshTokenRequest, TokenRefreshResponse
-from app.core.security import hash_password, verify_password, create_access_token, create_refresh_token
+from app.schemas.user import (
+    UserCreate,
+    UserOut,
+    Token,
+    RefreshTokenRequest,
+    TokenRefreshResponse,
+)
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+)
 from app.core.config import settings
 
 router = APIRouter(prefix="/auth", tags=["auth"])
+
 
 @router.post("/register", response_model=UserOut)
 async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
@@ -21,14 +33,13 @@ async def register(user_data: UserCreate, db: AsyncSession = Depends(get_db)):
 
     hashed = hash_password(user_data.password)
     new_user = User(
-        username=user_data.username,
-        email=user_data.email,
-        password_hash=hashed
+        username=user_data.username, email=user_data.email, password_hash=hashed
     )
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
     return new_user
+
 
 @router.post("/login", response_model=Token)
 async def login(email: str, password: str, db: AsyncSession = Depends(get_db)):
@@ -38,12 +49,23 @@ async def login(email: str, password: str, db: AsyncSession = Depends(get_db)):
         raise HTTPException(401, "Invalid credentials")
     access_token = create_access_token({"sub": user.id})
     refresh_token = create_refresh_token({"sub": user.id})
-    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+    }
+
 
 @router.post("/refresh", response_model=TokenRefreshResponse)
-async def refresh_token(refresh_data: RefreshTokenRequest, db: AsyncSession = Depends(get_db)):
+async def refresh_token(
+    refresh_data: RefreshTokenRequest, db: AsyncSession = Depends(get_db)
+):
     try:
-        payload = jwt.decode(refresh_data.refresh_token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
+        payload = jwt.decode(
+            refresh_data.refresh_token,
+            settings.SECRET_KEY,
+            algorithms=[settings.ALGORITHM],
+        )
         if payload.get("type") != "refresh":
             raise HTTPException(401, "Invalid token type")
         user_id = payload.get("sub")

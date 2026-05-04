@@ -12,7 +12,7 @@ origins = [
     "http://localhost:5173",
     "http://127.0.0.1:3000",
     "http://127.0.0.1:5173",
-    "*"  # на время разработки можно открыть полностью
+    "*",  # на время разработки можно открыть полностью
 ]
 
 app.add_middleware(
@@ -28,6 +28,7 @@ app.include_router(users.router, prefix="/api/v1")
 app.include_router(chats.router, prefix="/api/v1")
 app.include_router(search.router, prefix="/api/v1")
 app.add_api_websocket_route("/ws/chat/{chat_id}", websocket_chat)
+
 
 @app.get("/")
 async def root():

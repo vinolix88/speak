@@ -2,6 +2,7 @@ from pydantic import BaseModel
 from datetime import datetime
 from uuid import UUID
 
+
 class MessageOut(BaseModel):
     id: UUID
     chat_id: UUID
