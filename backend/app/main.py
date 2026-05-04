@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.v1.endpoints import auth, users, chats
+from app.api.v1.endpoints import search
+from app.api.v1.endpoints.websocket import websocket_chat
 
 app = FastAPI(title="Speak Messenger")
 
@@ -24,6 +26,8 @@ app.add_middleware(
 app.include_router(auth.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(chats.router, prefix="/api/v1")
+app.include_router(search.router, prefix="/api/v1")
+app.add_api_websocket_route("/ws/chat/{chat_id}", websocket_chat)
 
 @app.get("/")
 async def root():
